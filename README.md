@@ -12,26 +12,26 @@ This lab focuses on core penetration testing concepts, including:
 
 # TOOLS USED
 ## Enumeration
-   arp-scan
-   nmap
-   gobuster
-   Nikto
+   * arp-scan
+   * nmap
+   * gobuster
+   * Nikto
 
 ## Exploitation
-  Web directory analysis
-  CyberChef decoding
-  Morse code decoder
-  SSH login
+  * Web directory analysis
+  * CyberChef decoding
+  * Morse code decoder
+  * SSH login
 
 ## Privilege Escalation
-  LinPEAS
-  Writable /etc/passwd exploit
-  Custom root user injection
+  * LinPEAS
+  * Writable /etc/passwd exploit
+  * Custom root user injection
 
 ## Post-Exploitation
-  SSH (user pivoting)
-  Reading system files
-  Gaining full root access
+  * SSH (user pivoting)
+  * Reading system files
+  * Gaining full root access
 
 # Conclusion
 
