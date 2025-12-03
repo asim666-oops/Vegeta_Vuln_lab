@@ -2,13 +2,13 @@
 # Overview
 
 This lab focuses on core penetration testing concepts, including:
-Network reconnaissance
-Web exploitation
-Hidden directory & content discovery
-OSINT-based decoding (CyberChef, Morse)
-SSH credential extraction
-Privilege escalation via misconfigured system files
-Full system takeover
+* Network reconnaissance
+* Web exploitation
+* Hidden directory & content discovery
+* OSINT-based decoding (CyberChef, Morse)
+* SSH credential extraction
+* Privilege escalation via misconfigured system files
+* Full system takeover
 
 # TOOLS USED
 ## Enumeration
@@ -36,9 +36,9 @@ Full system takeover
 # Conclusion
 
 This lab reinforces critical penetration testing abilities required in real-world assessments:
-Effective enumeration of services and hidden directories
-Decoding multi-layered OSINT clues
-Extracting valid credentials through unconventional formats (audio → Morse)
-Gaining SSH access using discovered credentials
-Privilege escalation using insecure file permissions
-Achieving complete system compromise through methodical steps
+* Effective enumeration of services and hidden directories
+* Decoding multi-layered OSINT clues
+* Extracting valid credentials through unconventional formats (audio → Morse)
+* Gaining SSH access using discovered credentials
+* Privilege escalation using insecure file permissions
+* Achieving complete system compromise through methodical steps
